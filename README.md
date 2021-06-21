@@ -3,7 +3,7 @@ dice, with the following rules:
 1. At the start of the game, each player gets a dice of M units.
 2. All players will roll their respective dice at the same time
 3. Each player will check the results of their dice rolls and evaluate
-as follows:
+as follows:<br>
     a. Dice number 6 will be removed from the game and added as points for the player.<br>
     b. Dice number 1 will be awarded to the player sitting next to him.<br>
        For example, the first player will give his dice the number 1 to the second player.<br>
