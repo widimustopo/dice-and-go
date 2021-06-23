@@ -30,22 +30,18 @@ var onlyOnce sync.Once
 var dice = []int{1, 2, 3, 4, 5, 6}
 
 func rollDice() int {
-
 	onlyOnce.Do(func() {
 		rand.Seed(time.Now().UnixNano()) // only run once
 	})
-
 	return dice[rand.Intn(len(dice))]
 }
 
 func countProcess(players []Players, newFinalPoint []FinalPoint, try int) ([]Players, []FinalPoint, int) {
-
 	var playerInGame []Players
-
 	resPoint := checkPoint(players)
 	playerInGame = resPoint
 	fmt.Println("Get 1 point if value is 6 :", playerInGame)
-	result, finalPointsFromResPoint := checkGameOver(resPoint, newFinalPoint)
+	result, finalPointsFromResPoint := checkGameOver(resPoint)
 	for _, resPoint := range finalPointsFromResPoint {
 		newFinalPoint = append(newFinalPoint, FinalPoint{
 			player: resPoint.player,
@@ -58,7 +54,7 @@ func countProcess(players []Players, newFinalPoint []FinalPoint, try int) ([]Pla
 	playerInGame = movedice
 	fmt.Println("move die if value is  1   :", playerInGame)
 
-	result, finalPointsMoving := checkGameOver(playerInGame, newFinalPoint)
+	result, finalPointsMoving := checkGameOver(playerInGame)
 	for _, resPoint := range finalPointsMoving {
 		newFinalPoint = append(newFinalPoint, FinalPoint{
 			player: resPoint.player,
@@ -69,24 +65,20 @@ func countProcess(players []Players, newFinalPoint []FinalPoint, try int) ([]Pla
 	playerInGame = result
 
 	if len(playerInGame) != 0 && len(playerInGame) != 1 {
-		for _, new := range playerInGame {
-			for i := 0; i < len(new.dicesInHand); i++ {
-				new.dicesInHand[i] = rollDice()
+		for _, newDice := range playerInGame {
+			for i := 0; i < len(newDice.dicesInHand); i++ {
+				newDice.dicesInHand[i] = rollDice()
 			}
 		}
 		fmt.Printf("after new roll #%v         : %v", try+1, playerInGame)
 		fmt.Println()
 	}
-
 	return playerInGame, newFinalPoint, try + 1
-
 }
 
 func checkPoint(players []Players) []Players {
 	var newPlayerDice []Players
-
 	for _, player := range players {
-
 		for i := 0; i < len(player.dicesInHand); i++ {
 
 			if player.dicesInHand[i] == SixValueGetOnePoint {
@@ -102,7 +94,6 @@ func checkPoint(players []Players) []Players {
 				i--
 				continue
 			}
-
 		}
 
 		newPlayerDice = append(newPlayerDice, Players{
@@ -112,12 +103,10 @@ func checkPoint(players []Players) []Players {
 			movingDice:  player.movingDice,
 		})
 	}
-
 	return newPlayerDice
 }
 
 func moveDice(players []Players) []Players {
-
 	if len(players) != 1 && len(players) != 0 {
 		for i := 0; i < len(players); i++ {
 			if players[i].movingDice != 0 {
@@ -134,13 +123,11 @@ func moveDice(players []Players) []Players {
 			players[i].movingDice = 0
 		}
 	}
-
 	return players
 }
 
-func checkGameOver(players []Players, finals []FinalPoint) ([]Players, []FinalPoint) {
+func checkGameOver(players []Players) ([]Players, []FinalPoint) {
 	var newFinalPoint []FinalPoint
-
 	for i := 0; i < len(players); i++ {
 		if len(players[i].dicesInHand) == 0 {
 
@@ -154,7 +141,6 @@ func checkGameOver(players []Players, finals []FinalPoint) ([]Players, []FinalPo
 			continue
 		}
 	}
-
 	return players, newFinalPoint
 }
 
@@ -176,7 +162,7 @@ func displayWinner(finalPoint []FinalPoint) {
 func start(player int, dice int) []Players {
 	var newPlayer []Players
 
-	//startig player
+	//starting player
 	for i := 0; i < player; i++ {
 		var hisDice []int
 
@@ -191,15 +177,24 @@ func start(player int, dice int) []Players {
 			movingDice:  0,
 		})
 	}
-
 	return newPlayer
 }
 
 func main() {
-	player := 3
-	dice := 4
+	var player int
+	var diceCount int
+	fmt.Printf("===========PROGRAM Dice And Go============ \n")
+	fmt.Print("Masukan jumlah player : ")
+	_, err := fmt.Scanln(&player)
+	if err != nil {
+		fmt.Print("Masukan jumlah dadu : ")
+		_, _ = fmt.Scanln(&diceCount)
+	} else {
+		fmt.Print("Masukan jumlah dadu : ")
+		_, _ = fmt.Scanln(&diceCount)
+	}
 
-	initPlayers := start(player, dice)
+	initPlayers := start(player, diceCount)
 	fmt.Println("after roll #1             :", initPlayers)
 	var resPlayer []Players
 	var finalPoint []FinalPoint
